@@ -102,10 +102,11 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               const SizedBox(height: 15),
               AppBar(
+                backgroundColor: Colors.white,
                 title: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Colors.grey.withOpacity(0.5),
+                    color: Colors.blue.withOpacity(0.2),
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: TextField(
@@ -130,7 +131,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         _isGridView = !_isGridView;
                       });
                     },
-                    icon: Icon(_isGridView ? Icons.list : Icons.grid_view),
+                    icon: Icon(
+                        color: Colors.blue,
+                        _isGridView ? Icons.list : Icons.grid_view),
                   ),
                 ],
               ),
