@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:task/common/connectivity_service.dart';
 import 'package:task/common/error_widget.dart';
 import 'package:task/features/screens/home/common_listview_widget.dart';
+import 'package:task/features/screens/home/usergridItem.dart';
 import 'package:task/features/screens/services/user_services.dart';
 import 'package:task/models/user_model.dart';
 import 'package:task/provider/user_provider.dart';
@@ -17,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool _isGridView = false;
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   List<Data>? _filteredUserList;
@@ -121,6 +123,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: const TextStyle(color: Colors.black),
                   ),
                 ),
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _isGridView = !_isGridView;
+                      });
+                    },
+                    icon: Icon(_isGridView ? Icons.list : Icons.grid_view),
+                  ),
+                ],
               ),
             ],
           ),
@@ -141,22 +153,37 @@ class _HomeScreenState extends State<HomeScreen> {
                 return const CircularProgressIndicator();
               } else {
                 final userList = userProvider.user!.data;
-                return Stack(
-                  children: [
-                    UserListView(
-                      userList: userList ?? [],
-                      filteredUserList: _filteredUserList,
-                      clearSearchCallback: _clearSearch,
-                      scrollController: _scrollController,
-                    ),
-                    if (_isLoadingMore)
-                      Positioned(
-                        bottom: 10,
-                        left: MediaQuery.of(context).size.width / 2 - 15,
-                        child: const CircularProgressIndicator(),
-                      ),
-                  ],
-                );
+                return _isGridView
+                    ? Stack(children: [
+                        UserGridItem(
+                          userList: userList ?? [],
+                          filteredUserList: _filteredUserList,
+                          clearSearchCallback: _clearSearch,
+                          scrollController: _scrollController,
+                        ),
+                        if (_isLoadingMore)
+                          Positioned(
+                            bottom: 10,
+                            left: MediaQuery.of(context).size.width / 2 - 15,
+                            child: const CircularProgressIndicator(),
+                          ),
+                      ])
+                    : Stack(
+                        children: [
+                          UserListView(
+                            userList: userList ?? [],
+                            filteredUserList: _filteredUserList,
+                            clearSearchCallback: _clearSearch,
+                            scrollController: _scrollController,
+                          ),
+                          if (_isLoadingMore)
+                            Positioned(
+                              bottom: 10,
+                              left: MediaQuery.of(context).size.width / 2 - 15,
+                              child: const CircularProgressIndicator(),
+                            ),
+                        ],
+                      );
               }
             },
           ),
